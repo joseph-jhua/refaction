@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
+using System.Web.Http;
 
 using Moq;
 using NUnit.Framework;
@@ -114,10 +113,13 @@ namespace refectoe_me.Tests.Service
 		}
 
 		[Test]
-		public void Should_call_through_successfully_when_call_CreateOption()
+		public void Should_call_through_if_product_exists_successfully_when_call_CreateOption()
 		{
 			var id = new Guid("8f2e9176-35ee-4f0a-ae55-83023d2db1a3");
+			var product = new Product();
 			var productOption = new ProductOption();
+			_productDataProviderMock.Setup(p => p.Get(It.IsAny<Guid>()))
+				.Returns(product);
 
 			_productService.CreateOption(id, productOption);
 
@@ -125,15 +127,41 @@ namespace refectoe_me.Tests.Service
 		}
 
 		[Test]
+		public void Should_throw_excpetion_if_product_not_exists_when_call_CreateOption()
+		{
+			var id = new Guid("8f2e9176-35ee-4f0a-ae55-83023d2db1a3");
+			var productOption = new ProductOption();
+			_productDataProviderMock.Setup(p => p.Get(It.IsAny<Guid>()))
+				.Returns<Product>(null);
+
+			Assert.Throws<HttpResponseException>(() => _productService.CreateOption(id, productOption));
+		}
+
+		[Test]
 		public void Should_call_through_successfully_when_call_UpdateOption()
 		{
 			var productId = new Guid("8f2e9176-35ee-4f0a-ae55-83023d2db1a3");
 			var id = new Guid("12349176-35ee-4f0a-ae55-83023d2db1a3");
+			var product = new Product();
 			var productOption = new ProductOption();
+			_productDataProviderMock.Setup(p => p.Get(It.IsAny<Guid>()))
+				.Returns(product);
 
 			_productService.UpdateOption(productId, id, productOption);
 
 			_productOptionDataProvider.Verify(p => p.Save(It.Is<ProductOption>(po => po.Id == id && po.ProductId == productId), It.Is<bool>(b => !b)), Times.Once);
+		}
+
+		[Test]
+		public void Should_throw_excpetion_if_product_not_exists_when_call_UpdateOption()
+		{
+			var productId = new Guid("8f2e9176-35ee-4f0a-ae55-83023d2db1a3");
+			var id = new Guid("12349176-35ee-4f0a-ae55-83023d2db1a3");
+			var productOption = new ProductOption();
+			_productDataProviderMock.Setup(p => p.Get(It.IsAny<Guid>()))
+				.Returns<Product>(null);
+
+			Assert.Throws<HttpResponseException>(() => _productService.UpdateOption(productId, id, productOption));
 		}
 
 		[Test]

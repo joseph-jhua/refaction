@@ -76,6 +76,7 @@ namespace refactor_me.Infrastructure.DataProvider
 							// TODO: log exception
 
 							tran.Rollback();
+							throw;
 						}
 					}
 				}
