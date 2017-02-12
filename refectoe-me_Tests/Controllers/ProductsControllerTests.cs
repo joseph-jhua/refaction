@@ -341,7 +341,7 @@ namespace refectoe_me.Tests.Controllers
 				ProductId = oldProductOption.ProductId
 			};
 
-			_productsController.UpdateOption(oldProductOption.Id, newProductOption);
+			_productsController.UpdateOption(oldProductOption.ProductId, oldProductOption.Id, newProductOption);
 
 			var result = _productsController.GetOption(_validProductOption.ProductId, _validProductOption.Id);
 
@@ -358,7 +358,7 @@ namespace refectoe_me.Tests.Controllers
 				ProductId = _validProductOption.ProductId
 			};
 
-			_productsController.UpdateOption(newProductOption.Id, newProductOption);
+			_productsController.UpdateOption(_validProductOption.ProductId, newProductOption.Id, newProductOption);
 
 			var result = _productsController.GetOptions(_validProductOption.ProductId);
 

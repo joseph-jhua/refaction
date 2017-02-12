@@ -43,7 +43,7 @@ namespace refactor_me.Infrastructure.DataProvider
 		/// <param name="sqlHelper">SQL Helper for execute sql commands</param>
 		public SQLRepository(ISQLHelper sqlHelper)
 		{
-			this._sqlHelper = sqlHelper;
+			_sqlHelper = sqlHelper;
 
 			ExtractTableColumnInfo();
 		}
@@ -53,24 +53,24 @@ namespace refactor_me.Infrastructure.DataProvider
 			var tableNameAttributes = typeof(T).GetCustomAttributes(typeof(TableNameAttribute), true);
 			if (tableNameAttributes.Length == 0 || string.IsNullOrEmpty(((TableNameAttribute)tableNameAttributes[0]).TableName))
 			{
-				this._tableName = typeof(T).Name;
+				_tableName = typeof(T).Name;
 			}
 			else
 			{
-				this._tableName = ((TableNameAttribute)tableNameAttributes[0]).TableName;
+				_tableName = ((TableNameAttribute)tableNameAttributes[0]).TableName;
 			}
 
-			this._columnInfo = new Dictionary<string, string>();
+			_columnInfo = new Dictionary<string, string>();
 			foreach (var property in typeof(T).GetProperties())
 			{
 				var columnNameAttributes = property.GetCustomAttributes(typeof(ColumnNameAttribute), true);
 				if (columnNameAttributes.Length == 0 || string.IsNullOrEmpty(((ColumnNameAttribute)columnNameAttributes[0]).ColumnName))
 				{
-					this._columnInfo.Add(property.Name, property.Name);
+					_columnInfo.Add(property.Name, property.Name);
 				}
 				else
 				{
-					this._columnInfo.Add(property.Name, ((ColumnNameAttribute)columnNameAttributes[0]).ColumnName);
+					_columnInfo.Add(property.Name, ((ColumnNameAttribute)columnNameAttributes[0]).ColumnName);
 				}
 			}
 		}
@@ -82,12 +82,12 @@ namespace refactor_me.Infrastructure.DataProvider
 		/// <returns>entity corrspond to input Id</returns>
 		public T Get(Guid id)
 		{
-			var cmdText = string.Format(this._getSqlCommand, this._tableName);
+			var cmdText = string.Format(_getSqlCommand, _tableName);
 			var parameters = new Dictionary<string, object>()
 			{
 				{"@Id", id}
 			};
-			var dataTable = this._sqlHelper.ExcuteQuery(cmdText, parameters);
+			var dataTable = _sqlHelper.ExcuteQuery(cmdText, parameters);
 
 			if (dataTable.Rows == null || dataTable.Rows.Count == 0)
 			{
@@ -122,7 +122,7 @@ namespace refactor_me.Infrastructure.DataProvider
 		{
 			var result = new T();
 
-			foreach (var propertyMap in this._columnInfo)
+			foreach (var propertyMap in _columnInfo)
 			{
 				var columnValue = (null == dataRow[propertyMap.Value] || DBNull.Value == dataRow[propertyMap.Value]) ? null : dataRow[propertyMap.Value].ToString();
 				var columnPropertyInfo = result.GetType().GetProperty(propertyMap.Key);
@@ -142,7 +142,7 @@ namespace refactor_me.Infrastructure.DataProvider
 			var updateList = new List<string>();
 			var parameters = new Dictionary<string, object>();
 
-			foreach (var property in this._columnInfo)
+			foreach (var property in _columnInfo)
 			{
 				insertColumnList.Add(property.Value);
 				insertValueList.Add(string.Format("@{0}", property.Value));
@@ -151,26 +151,26 @@ namespace refactor_me.Infrastructure.DataProvider
 			}
 
 			var sqlCommandText = insertWhenNotExists ?
-				string.Format(this._saveSqlCommand,
-					this._tableName,
+				string.Format(_saveSqlCommand,
+					_tableName,
 					string.Join(",", insertColumnList.ToArray()),
 					string.Join(",", insertValueList.ToArray()),
 					string.Join(",", updateList.ToArray())) :
-				string.Format(this._updateSqlCommand,
-					this._tableName,
+				string.Format(_updateSqlCommand,
+					_tableName,
 					string.Join(",", updateList.ToArray()));
 
-			this._sqlHelper.ExcuteNonQueryInTransaction(sqlCommandText, parameters);
+			_sqlHelper.ExcuteNonQueryInTransaction(sqlCommandText, parameters);
 		}
 
 		public void Delete(Guid id)
 		{
-			var cmdText = string.Format(this._deleteSqlCommand, this._tableName);
+			var cmdText = string.Format(_deleteSqlCommand, _tableName);
 			var parameters = new Dictionary<string, object>()
 			{
 				{"@Id", id}
 			};
-			this._sqlHelper.ExcuteNonQuery(cmdText, parameters);
+			_sqlHelper.ExcuteNonQuery(cmdText, parameters);
 		}
 
 		public List<T> GetAll()
@@ -184,12 +184,12 @@ namespace refactor_me.Infrastructure.DataProvider
 			IDictionary<string, object> sqlParameters;
 			ConvertToSqlParameters(searchParameters, out conditionList, out sqlParameters);
 
-			var cmdText = string.Format(this._getAllSqlCommand, this._tableName,
+			var cmdText = string.Format(_getAllSqlCommand, _tableName,
 				conditionList.Count > 0 ?
-				string.Format(this._whereClause, string.Join(" AND ", conditionList)) :
+				string.Format(_whereClause, string.Join(" AND ", conditionList)) :
 				string.Empty);
 
-			var dataTable = this._sqlHelper.ExcuteQuery(cmdText, sqlParameters);
+			var dataTable = _sqlHelper.ExcuteQuery(cmdText, sqlParameters);
 
 			var result = new List<T>();
 
@@ -212,12 +212,12 @@ namespace refactor_me.Infrastructure.DataProvider
 			IDictionary<string, object> sqlParameters;
 			ConvertToSqlParameters(searchParameters, out conditionList, out sqlParameters);
 
-			var cmdText = string.Format(this._deleteAllSqlCommand, this._tableName,
+			var cmdText = string.Format(_deleteAllSqlCommand, _tableName,
 				conditionList.Count > 0 ?
-				string.Format(this._whereClause, string.Join(" AND ", conditionList)) :
+				string.Format(_whereClause, string.Join(" AND ", conditionList)) :
 				string.Empty);
 
-			this._sqlHelper.ExcuteNonQuery(cmdText, sqlParameters);
+			_sqlHelper.ExcuteNonQuery(cmdText, sqlParameters);
 		}
 
 		private void ConvertToSqlParameters(IDictionary<string, object> searchParameters, out List<string> conditionList, out IDictionary<string, object> sqlParameters)
@@ -232,8 +232,8 @@ namespace refactor_me.Infrastructure.DataProvider
 
 			foreach (var searchParameter in searchParameters)
 			{
-				conditionList.Add(string.Format("{0} = @{0}", this._columnInfo[searchParameter.Key]));
-				sqlParameters.Add(string.Format("@{0}", this._columnInfo[searchParameter.Key]), searchParameter.Value);
+				conditionList.Add(string.Format("{0} = @{0}", _columnInfo[searchParameter.Key]));
+				sqlParameters.Add(string.Format("@{0}", _columnInfo[searchParameter.Key]), searchParameter.Value);
 			}
 		}
 	}

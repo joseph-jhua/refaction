@@ -53,7 +53,7 @@ namespace refectoe_me.Tests
 		public void SetUp()
 		{
 			_sqlDataProvider.DeleteAll(null);
-			foreach (var product in this._defaultProducts)
+			foreach (var product in _defaultProducts)
 			{
 				_sqlDataProvider.Save(product, true);
 			}
@@ -64,7 +64,7 @@ namespace refectoe_me.Tests
 		{
 			var result = _sqlDataProvider.Get(new Guid("8f2e9176-35ee-4f0a-ae55-83023d2db1a3"));
 
-			Assert.AreEqual(this._validProduct, result);
+			Assert.AreEqual(_validProduct, result);
 		}
 
 		[TestCase]
