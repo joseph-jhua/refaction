@@ -36,8 +36,11 @@ namespace refactor_me.Controllers
         public Product GetProduct(Guid id)
         {
             var product = _productService.GetProduct(id);
-            if (null == product)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+			if (null == product)
+			{
+				// log
+				throw new HttpResponseException(HttpStatusCode.NotFound);
+			}
 
             return product;
         }
@@ -75,9 +78,13 @@ namespace refactor_me.Controllers
         public ProductOption GetOption(Guid productId, Guid id)
         {
 			// QUESTION: should also check product exists?
+			// From the code logic, there is no case when option exists for non-exist product
             var option = _productService.GetOption(id);
-            if (null == option)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+			if (null == option)
+			{
+				// log
+				throw new HttpResponseException(HttpStatusCode.NotFound);
+			}
 
             return option;
         }

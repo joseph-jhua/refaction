@@ -1,8 +1,11 @@
-﻿using refactor_me.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.Http;
+
+using refactor_me.Domain;
 
 namespace refactor_me.Services
 {
@@ -20,12 +23,28 @@ namespace refactor_me.Services
 
 		public void CreateOption(Guid productId, ProductOption option)
 		{
+			var product = _productDataProvider.Get(productId);
+
+			if (product == null)
+			{
+				// log
+				throw new HttpResponseException(HttpStatusCode.NotFound);
+			}
+
 			option.ProductId = productId;
 			_productOptionDataProvider.Save(option, true);
 		}
 
 		public void UpdateOption(Guid productId, Guid id, ProductOption option)
 		{
+			var product = _productDataProvider.Get(productId);
+
+			if (product == null)
+			{
+				// log
+				throw new HttpResponseException(HttpStatusCode.NotFound);
+			}
+
 			option.Id = id;
 			option.ProductId = productId;
 

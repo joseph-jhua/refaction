@@ -120,6 +120,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\ExcpetionFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefactorMeWebModule.cs" />
     <Compile Include="Services\IProductService.cs" />

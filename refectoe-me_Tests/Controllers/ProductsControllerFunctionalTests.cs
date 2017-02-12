@@ -302,6 +302,7 @@ namespace refectoe_me.Tests.Controllers
 		[TestCase]
 		public void Should_create_option_when_is_new_successfully_when_call_CreateOption()
 		{
+			// This is the only funcitonal test changed in refactor, since the logic of create option when product is not exist has been change to throw exception
 			var newProductOption = new ProductOption
 			{
 				Name = "Samsung Galaxy S6",
@@ -309,11 +310,7 @@ namespace refectoe_me.Tests.Controllers
 				ProductId = Guid.NewGuid()
 			};
 
-			_productsController.CreateOption(newProductOption.ProductId, newProductOption);
-
-			var result = _productsController.GetOption(newProductOption.ProductId, newProductOption.Id);
-
-			Assert.AreEqual(newProductOption, result);
+			Assert.Throws<HttpResponseException>(() => _productsController.CreateOption(newProductOption.ProductId, newProductOption));
 		}
 
 		[TestCase]
