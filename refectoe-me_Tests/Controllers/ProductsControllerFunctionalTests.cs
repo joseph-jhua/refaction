@@ -19,7 +19,7 @@ namespace refectoe_me.Tests.Controllers
 	// This is actually not unit test now, more like functional test to make sure the refactor is working the same as legacy code
 	// TODO: refactor to real UT
 	[TestFixture]
-	public class ProductsControllerTests
+	public class ProductsControllerFunctionalTests
 	{
 		private ProductsController _productsController;
 
