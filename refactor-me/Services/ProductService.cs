@@ -8,8 +8,8 @@ namespace refactor_me.Services
 {
 	public partial class ProductService : IProductService
 	{
-		private IRepository<Product> _productDataProvider;
-		private IRepository<ProductOption> _productOptionDataProvider;
+		private readonly IRepository<Product> _productDataProvider;
+		private readonly IRepository<ProductOption> _productOptionDataProvider;
 
 		public ProductService(IRepository<Product> productDataProvider, IRepository<ProductOption> productOptionDataProvider)
 		{
@@ -17,7 +17,7 @@ namespace refactor_me.Services
 			_productOptionDataProvider = productOptionDataProvider;
 		}
 
-		public List<Product> GetAllProduct()
+		public List<Product> GetAllProducts()
 		{
 			return _productDataProvider.GetAll();
 		}

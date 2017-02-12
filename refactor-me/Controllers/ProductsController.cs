@@ -10,7 +10,7 @@ namespace refactor_me.Controllers
     [RoutePrefix("products")]
     public class ProductsController : ApiController
     {
-		private IProductService _productService;
+		private readonly IProductService _productService;
 
 		public ProductsController(IProductService productService)
 		{
@@ -21,7 +21,7 @@ namespace refactor_me.Controllers
         [HttpGet]
         public Products GetAll()
         {
-            return new Products(_productService.GetAllProduct());
+            return new Products(_productService.GetAllProducts());
         }
 
         [Route]

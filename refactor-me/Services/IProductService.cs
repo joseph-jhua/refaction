@@ -9,7 +9,7 @@ namespace refactor_me.Services
 		void DeleteOption(Guid id);
 		void DeleteProduct(Guid id);
 		System.Collections.Generic.List<refactor_me.Domain.ProductOption> GetAllOptions(Guid productId);
-		System.Collections.Generic.List<refactor_me.Domain.Product> GetAllProduct();
+		System.Collections.Generic.List<refactor_me.Domain.Product> GetAllProducts();
 		refactor_me.Domain.ProductOption GetOption(Guid id);
 		refactor_me.Domain.Product GetProduct(Guid id);
 		System.Collections.Generic.List<refactor_me.Domain.Product> SearchProductByName(string name);

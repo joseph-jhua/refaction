@@ -20,20 +20,20 @@ namespace refactor_me.Infrastructure.DataProvider
 	public class SQLRepository<T> : IRepository<T>
 		where T : BaseDataModelWithId, new()
 	{
-		private ISQLHelper _sqlHelper;
+		private readonly ISQLHelper _sqlHelper;
 		private string _tableName;
 		private IDictionary<string, string> _columnInfo;
 
-		private string _getSqlCommand = @"SELECT * FROM {0} WHERE Id = @Id";
-		private string _saveSqlCommand = @"IF NOT EXISTS(SELECT 1 FROM {0} WHERE Id = @Id)" +
+		private const string _getSqlCommand = @"SELECT * FROM {0} WHERE Id = @Id";
+		private const string _saveSqlCommand = @"IF NOT EXISTS(SELECT 1 FROM {0} WHERE Id = @Id)" +
                 @" INSERT INTO {0} ({1}) VALUES ({2})" +
                 @" ELSE" +
                 @" UPDATE {0} SET {3} WHERE Id = @Id";
-		private string _updateSqlCommand = @" UPDATE {0} SET {1} WHERE Id = @Id";
-		private string _deleteSqlCommand = @"DELETE FROM {0} WHERE Id = @Id";
-		private string _getAllSqlCommand = @"SELECT * FROM {0} {1}";
-		private string _deleteAllSqlCommand = @"DELETE FROM {0} {1}";
-		private string _whereClause = @"WHERE {0}";
+		private const string _updateSqlCommand = @"UPDATE {0} SET {1} WHERE Id = @Id";
+		private const string _deleteSqlCommand = @"DELETE FROM {0} WHERE Id = @Id";
+		private const string _getAllSqlCommand = @"SELECT * FROM {0} {1}";
+		private const string _deleteAllSqlCommand = @"DELETE FROM {0} {1}";
+		private const string _whereClause = @"WHERE {0}";
 
 		private string _notSupprtTypeExceptionString = @"Property with type: {0} is not supported.";
 
@@ -89,7 +89,7 @@ namespace refactor_me.Infrastructure.DataProvider
 			};
 			var dataTable = _sqlHelper.ExcuteQuery(cmdText, parameters);
 
-			if (dataTable.Rows == null || dataTable.Rows.Count == 0)
+			if (dataTable == null || dataTable.Rows == null || dataTable.Rows.Count == 0)
 			{
 				return null;
 			}
@@ -193,7 +193,7 @@ namespace refactor_me.Infrastructure.DataProvider
 
 			var result = new List<T>();
 
-			if (dataTable.Rows == null || dataTable.Rows.Count == 0)
+			if (dataTable == null || dataTable.Rows == null || dataTable.Rows.Count == 0)
 			{
 				return result;
 			}
