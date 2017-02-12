@@ -7,7 +7,7 @@ namespace refactor_me.Domain
 {
 	[TableName("product")]
 	public class Product : BaseDataModelWithId
-    {
+	{
 		[ColumnName("Name")]
 		public string Name { get; set; }
 
