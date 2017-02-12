@@ -10,18 +10,18 @@ namespace refactor_me.Services
 	{
 		public List<ProductOption> GetAllOptions(Guid productId)
 		{
-			return this._productOptionDataProvider.GetAll(new Dictionary<string, object>() { { typeof(ProductOption).GetProperty("ProductId").Name, productId } });
+			return _productOptionDataProvider.GetAll(new Dictionary<string, object>() { { typeof(ProductOption).GetProperty("ProductId").Name, productId } });
 		}
 
 		public ProductOption GetOption(Guid id)
 		{
-			return this._productOptionDataProvider.Get(id);
+			return _productOptionDataProvider.Get(id);
 		}
 
 		public void CreateOption(Guid productId, ProductOption option)
 		{
 			option.ProductId = productId;
-			this._productOptionDataProvider.Save(option, true);
+			_productOptionDataProvider.Save(option, true);
 		}
 
 		public void UpdateOption(Guid productId, Guid id, ProductOption option)
@@ -29,12 +29,12 @@ namespace refactor_me.Services
 			option.Id = id;
 			option.ProductId = productId;
 
-			this._productOptionDataProvider.Save(option, false);
+			_productOptionDataProvider.Save(option, false);
 		}
 
 		public void DeleteOption(Guid id)
 		{
-			this._productOptionDataProvider.Delete(id);
+			_productOptionDataProvider.Delete(id);
 		}
 	}
 }
