@@ -1,83 +1,90 @@
 ﻿using System;
 using System.Net;
 using System.Web.Http;
-using refactor_me.Models;
+
+using refactor_me.Domain;
+using refactor_me.Services;
 
 namespace refactor_me.Controllers
 {
     [RoutePrefix("products")]
     public class ProductsController : ApiController
     {
+		private readonly IProductService _productService;
+
+		public ProductsController(IProductService productService)
+		{
+			_productService = productService;
+		}
+
         [Route]
         [HttpGet]
         public Products GetAll()
         {
-            return new Products();
+            return new Products(_productService.GetAllProducts());
         }
 
         [Route]
         [HttpGet]
         public Products SearchByName(string name)
         {
-            return new Products(name);
+			return new Products(_productService.SearchProductByName(name));
         }
 
         [Route("{id}")]
         [HttpGet]
         public Product GetProduct(Guid id)
         {
-            var product = new Product(id);
-            if (product.IsNew)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+            var product = _productService.GetProduct(id);
+			if (null == product)
+			{
+				// log
+				throw new HttpResponseException(HttpStatusCode.NotFound);
+			}
 
             return product;
         }
 
         [Route]
         [HttpPost]
-        public void Create(Product product)
+        public void Create([FromBody]Product product)
         {
-            product.Save();
+			_productService.CreateProduct(product);
         }
 
         [Route("{id}")]
         [HttpPut]
         public void Update(Guid id, Product product)
-        {
-            var orig = new Product(id)
-            {
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                DeliveryPrice = product.DeliveryPrice
-            };
-
-            if (!orig.IsNew)
-                orig.Save();
+		{
+			_productService.UpdateProduct(id, product);
         }
 
         [Route("{id}")]
         [HttpDelete]
         public void Delete(Guid id)
         {
-            var product = new Product(id);
-            product.Delete();
+			_productService.DeleteProduct(id);
         }
 
         [Route("{productId}/options")]
         [HttpGet]
         public ProductOptions GetOptions(Guid productId)
-        {
-            return new ProductOptions(productId);
+		{
+			return new ProductOptions(_productService.GetAllOptions(productId));
         }
 
         [Route("{productId}/options/{id}")]
         [HttpGet]
         public ProductOption GetOption(Guid productId, Guid id)
         {
-            var option = new ProductOption(id);
-            if (option.IsNew)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+			// QUESTION: should also check product exists?
+			// From the code logic, there is no case when option exists for non-exist product
+            var option = _productService.GetOption(id);
+			if (null == option)
+			{
+				// log
+				throw new HttpResponseException(HttpStatusCode.NotFound);
+			}
 
             return option;
         }
@@ -86,30 +93,21 @@ namespace refactor_me.Controllers
         [HttpPost]
         public void CreateOption(Guid productId, ProductOption option)
         {
-            option.ProductId = productId;
-            option.Save();
+			_productService.CreateOption(productId, option);
         }
 
         [Route("{productId}/options/{id}")]
         [HttpPut]
-        public void UpdateOption(Guid id, ProductOption option)
+        public void UpdateOption(Guid productId, Guid id, ProductOption option)
         {
-            var orig = new ProductOption(id)
-            {
-                Name = option.Name,
-                Description = option.Description
-            };
-
-            if (!orig.IsNew)
-                orig.Save();
+			_productService.UpdateOption(productId, id, option);
         }
 
         [Route("{productId}/options/{id}")]
         [HttpDelete]
         public void DeleteOption(Guid id)
-        {
-            var opt = new ProductOption(id);
-            opt.Delete();
+		{
+			_productService.DeleteOption(id);
         }
     }
 }

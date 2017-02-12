@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using refactor_me.Infrastructure;
 
 namespace refactor_me
 {
@@ -13,6 +14,8 @@ namespace refactor_me
 
             // Web API routes
             config.MapHttpAttributeRoutes();
+
+			config.Filters.Add(new ExceptionFilter());
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

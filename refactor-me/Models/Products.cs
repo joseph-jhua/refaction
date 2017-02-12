@@ -32,6 +32,8 @@ namespace refactor_me.Models
                 var id = Guid.Parse(rdr["id"].ToString());
                 Items.Add(new Product(id));
             }
+			
+			conn.Close();
         }
     }
 
@@ -49,6 +51,21 @@ namespace refactor_me.Models
         
         [JsonIgnore]
         public bool IsNew { get; }
+
+		public override bool Equals(object obj)
+		{
+ 			if (obj == null || typeof(Product) != obj.GetType())
+			{
+				return false;
+			}
+
+			var product = obj as Product;
+			return product.Id == Id
+				&& product.Name == Name
+				&& product.Description == Description
+				&& product.Price == Price
+				&& product.DeliveryPrice == DeliveryPrice;
+		}
 
         public Product()
         {
@@ -73,6 +90,8 @@ namespace refactor_me.Models
             Description = (DBNull.Value == rdr["Description"]) ? null : rdr["Description"].ToString();
             Price = decimal.Parse(rdr["Price"].ToString());
             DeliveryPrice = decimal.Parse(rdr["DeliveryPrice"].ToString());
+			
+			conn.Close();
         }
 
         public void Save()
@@ -84,6 +103,7 @@ namespace refactor_me.Models
 
             conn.Open();
             cmd.ExecuteNonQuery();
+			conn.Close();
         }
 
         public void Delete()
@@ -95,6 +115,7 @@ namespace refactor_me.Models
             conn.Open();
             var cmd = new SqlCommand($"delete from product where id = '{Id}'", conn);
             cmd.ExecuteNonQuery();
+			conn.Close();
         }
     }
 
@@ -125,6 +146,8 @@ namespace refactor_me.Models
                 var id = Guid.Parse(rdr["id"].ToString());
                 Items.Add(new ProductOption(id));
             }
+			
+			conn.Close();
         }
     }
 
@@ -140,6 +163,20 @@ namespace refactor_me.Models
 
         [JsonIgnore]
         public bool IsNew { get; }
+
+		public override bool Equals(object obj)
+		{
+ 			if (obj == null || typeof(ProductOption) != obj.GetType())
+			{
+				return false;
+			}
+
+			var productOption = obj as ProductOption;
+			return productOption.Id == Id
+				&& productOption.Name == Name
+				&& productOption.Description == Description
+				&& productOption.ProductId == ProductId;
+		}
 
         public ProductOption()
         {
@@ -163,6 +200,8 @@ namespace refactor_me.Models
             ProductId = Guid.Parse(rdr["ProductId"].ToString());
             Name = rdr["Name"].ToString();
             Description = (DBNull.Value == rdr["Description"]) ? null : rdr["Description"].ToString();
+			
+			conn.Close();
         }
 
         public void Save()
@@ -174,6 +213,8 @@ namespace refactor_me.Models
 
             conn.Open();
             cmd.ExecuteNonQuery();
+			
+			conn.Close();
         }
 
         public void Delete()
@@ -182,6 +223,8 @@ namespace refactor_me.Models
             conn.Open();
             var cmd = new SqlCommand($"delete from productoption where id = '{Id}'", conn);
             cmd.ExecuteReader();
+			
+			conn.Close();
         }
     }
 }
