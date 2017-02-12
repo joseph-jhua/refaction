@@ -1,13 +1,18 @@
-﻿using NUnit.Framework;
-using refactor_me.Controllers;
-using refactor_me.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+
+using NUnit.Framework;
+
+using refactor_me.Controllers;
+using refactor_me.Domain;
+using refactor_me.Services;
+using refactor_me.Infrastructure.DataProvider;
+using refectoe_me.Tests.Helper;
 
 namespace refectoe_me.Tests.Controllers
 {
@@ -26,7 +31,7 @@ namespace refectoe_me.Tests.Controllers
 		[TestFixtureSetUp]
 		public void FixtureSetUp()
 		{
-			_productsController = new ProductsController();
+			_productsController = new ProductsController(new ProductService(new SQLRepository<Product>(new TestSQLHelper()), new SQLRepository<ProductOption>(new TestSQLHelper())));
 			_defaultProducts = new List<Product>();
 			_validProduct = new Product
 			{
@@ -95,6 +100,7 @@ namespace refectoe_me.Tests.Controllers
 			{
 				_productsController.Delete(product.Id);
 			}
+
 			foreach(var product in _defaultProducts)
 			{
 				_productsController.Create(product);
