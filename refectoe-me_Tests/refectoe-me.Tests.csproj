@@ -71,9 +71,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ProductsControllerTests.cs" />
+    <Compile Include="Helper\TestSQLHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Infrastructure\SQLDataProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\refactor-me.Domain\refactor-me.Domain.csproj">
+      <Project>{eca16987-a3c8-4b77-8c2b-45937d76ce9b}</Project>
+      <Name>refactor-me.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\refactor-me.Infrastructure\refactor-me.Infrastructure.csproj">
+      <Project>{b116ed5c-4ed7-459f-86fe-865d7adebbdd}</Project>
+      <Name>refactor-me.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\refactor-me\refactor-me.csproj">
       <Project>{20ab69f9-f2d3-4a68-96c3-424ec8b9406e}</Project>
       <Name>refactor-me</Name>
@@ -84,9 +94,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database.mdf">
